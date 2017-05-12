@@ -81,6 +81,7 @@ int main(int argc, const char * argv[]) {
         NSString *str2 = @"Это строка В";
         NSString *res;
         NSComparisonResult compareResult;//будет содержать результат операции сравнения строк
+        NSRange subRange;
         
         //Подсчет числа знаков
         NSLog(@"Длина str1: %lu", [str1 length]);
@@ -117,6 +118,100 @@ int main(int argc, const char * argv[]) {
         res = [str1 lowercaseString];
         NSLog(@"Преобразование в нижний регистр: %@", res);
         NSLog(@"Оригинальная строка %@", str1);
+        
+        // Извлечь первые три символа
+        res = [str1 substringToIndex:3];
+        NSLog(@"Первые три символа строки str1: %@", res);
+        
+        // Извлечь все символы до конца строки начиная с индекса 5
+        res = [str1 substringFromIndex:5];
+        NSLog(@"Символы с индекса 5 строки: %@", res);
+        
+        //Извлечь сиволы с индекса 8 до 13 (6 символов)
+        res = [str2 substringWithRange:NSMakeRange(8, 6)];
+        NSLog(@"Сиволы с индекса 8 до 13: %@", res);
+        
+        //Поиск одной строки внутри другой
+        subRange = [str1 rangeOfString:@"string A"];
+        NSLog(@"Строка начинается с индекса %lu  дина равна %lu", subRange.location, subRange.length);
+        subRange = [str1 rangeOfString:@"string B"];
+        
+        if (subRange.location == NSNotFound) {
+            NSLog(@"Строка не найдена");
+        } else {
+            NSLog(@"Строка начинается с индекса %lu  дина равна %lu", subRange.location, subRange.length);
+        }
+        
+        //Мутабельные строки
+        
+        NSString *str3 =@"This is string A";
+        NSMutableString *msrt;
+        NSRange subStr;
+        NSLog(@"________________");
+        NSLog(@"МУТАБЕЛЬНЫЕ СТРОКИ");
+        
+        // Создание мутабельной строки из не мутабелной
+        msrt = [NSMutableString stringWithString:str3];
+        NSLog(@"%@", msrt);
+        
+        //Вставка символов
+        [msrt insertString:@"mutable " atIndex:8];
+        NSLog(@"%@", msrt);
+        
+        // По сути конкатенация если вставка осуществляется в конец
+        [msrt insertString:@" and sting B" atIndex:[msrt length]];
+        NSLog(@"%@", msrt);
+        
+        // Или можно использовать метода appendString
+        [msrt appendString:@" and string C"];
+        NSLog(@"%@", msrt);
+        
+        //Удаление строки с использованием диапозона
+        [msrt deleteCharactersInRange:NSMakeRange(16, 13)];
+        NSLog(@"%@", msrt);
+        
+        // Сначала поиск диапазона затем его использование для удаления
+        subStr = [msrt rangeOfString:@"string B and "];
+        
+        if (subStr.location != NSNotFound) {
+            [msrt deleteCharactersInRange:subStr];
+            NSLog(@"%@", msrt);
+        }
+        
+        //Присваиваем мутабельную строку напрямую
+        [msrt setString:@"This is string A"];
+        NSLog(@"%@", msrt);
+        
+        //Теперь заменим диапозон символов другим
+        [msrt replaceCharactersInRange:NSMakeRange(8, 8) withString:@"a mutable string"];
+        NSLog(@"%@", msrt);
+        
+        //Поиск и замена
+        NSString *search = @"This is";
+        NSString *repleace = @"An example of";
+        
+        subStr = [msrt rangeOfString:search];
+        
+        if (subStr.location != NSNotFound) {
+            [msrt replaceCharactersInRange:subStr
+                                withString:repleace];
+            NSLog(@"%@", msrt);
+        }
+        
+        //Поиск и замена всех вхождений
+        
+        NSString *searchNew = @"a";
+        NSString *repleaceNew = @"X";
+        
+        subStr = [msrt rangeOfString:searchNew];
+        
+        while (subStr.location != NSNotFound) {
+            [msrt replaceCharactersInRange:subStr
+                                withString:repleaceNew];
+            subStr = [msrt rangeOfString:searchNew];
+        }
+        
+        NSLog(@"%@", msrt);
     }
     return 0;
 }
